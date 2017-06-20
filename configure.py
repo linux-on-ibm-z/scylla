@@ -266,6 +266,8 @@ arg_parser.add_argument('--cflags', action = 'store', dest = 'user_cflags', defa
                         help = 'Extra flags for the C++ compiler')
 arg_parser.add_argument('--ldflags', action = 'store', dest = 'user_ldflags', default = '',
                         help = 'Extra flags for the linker')
+arg_parser.add_argument('--target', action = 'store', dest = 'target', default = 'nehalem',
+                        help = 'Target architecture (-march)')
 arg_parser.add_argument('--compiler', action = 'store', dest = 'cxx', default = 'g++',
                         help = 'C++ compiler path')
 arg_parser.add_argument('--c-compiler', action='store', dest='cc', default='gcc',
@@ -767,7 +769,9 @@ if args.gcc6_concepts:
 if args.alloc_failure_injector:
     seastar_flags += ['--enable-alloc-failure-injector']
 
-seastar_cflags = args.user_cflags + " -march=nehalem"
+seastar_cflags = args.user_cflags
+if target != '':
+    seastar_cflags += ' -march=' + target
 seastar_flags += ['--compiler', args.cxx, '--c-compiler', args.cc, '--cflags=%s' % (seastar_cflags)]
 
 status = subprocess.call([python, './configure.py'] + seastar_flags, cwd = 'seastar')
