@@ -161,6 +161,11 @@ public:
     virtual void* alloc(migrate_fn, size_t size, size_t alignment) override {
         // ASAN doesn't intercept aligned_alloc() and complains on free().
         void* ret;
+        // The system posix_memalign will return EINVAL if alignment is not
+        // a multiple of pointer size.
+        if (alignment < sizeof(void*)) {
+            alignment = sizeof(void*);
+        }
         if (posix_memalign(&ret, alignment, size) != 0) {
             throw std::bad_alloc();
         }
