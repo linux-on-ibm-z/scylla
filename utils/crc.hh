@@ -106,6 +106,18 @@ public:
     template <class T>
     void process(T in) {
         static_assert(std::is_integral<T>::value, "T must be integral type.");
+
+        // The tests assume little-endian byte order, so reverse
+        // the bytes on a big-endian system.
+#if defined(__BYTE_ORDER__) && defined(__ORDER_BIG_ENDIAN__) && \
+    __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+        switch (sizeof(T)) {
+        case 2: in = __builtin_bswap16(in); break;
+        case 4: in = __builtin_bswap32(in); break;
+        case 8: in = __builtin_bswap64(in); break;
+        }
+#endif
+
         _r = ::crc32(_r, reinterpret_cast<const uint8_t*>(&in), sizeof(T));
     }
     void process(const uint8_t* in, size_t size) {
