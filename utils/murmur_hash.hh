@@ -62,15 +62,17 @@ uint64_t hash2_64(bytes_view key, uint64_t seed);
 template<typename InputIterator>
 inline
 uint64_t read_block(InputIterator& in) {
-    typename std::iterator_traits<InputIterator>::value_type tmp[8];
-    for (int i = 0; i < 8; ++i) {
-        tmp[i] = *in;
-        ++in;
-    }
-    return ((uint64_t) tmp[0] & 0xff) + (((uint64_t) tmp[1] & 0xff) << 8) +
-           (((uint64_t) tmp[2] & 0xff) << 16) + (((uint64_t) tmp[3] & 0xff) << 24) +
-           (((uint64_t) tmp[4] & 0xff) << 32) + (((uint64_t) tmp[5] & 0xff) << 40) +
-           (((uint64_t) tmp[6] & 0xff) << 48) + (((uint64_t) tmp[7] & 0xff) << 56);
+    uint64_t result = 0;
+    result |= static_cast<uint64_t>(static_cast<uint8_t>(*in));
+    result |= static_cast<uint64_t>(static_cast<uint8_t>(*++in)) << 8;
+    result |= static_cast<uint64_t>(static_cast<uint8_t>(*++in)) << 16;
+    result |= static_cast<uint64_t>(static_cast<uint8_t>(*++in)) << 24;
+    result |= static_cast<uint64_t>(static_cast<uint8_t>(*++in)) << 32;
+    result |= static_cast<uint64_t>(static_cast<uint8_t>(*++in)) << 40;
+    result |= static_cast<uint64_t>(static_cast<uint8_t>(*++in)) << 48;
+    result |= static_cast<uint64_t>(static_cast<uint8_t>(*++in)) << 56;
+    ++in;
+    return result;
 }
 
 static inline
