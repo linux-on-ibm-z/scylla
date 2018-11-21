@@ -1,6 +1,6 @@
 [submodule "seastar"]
 	path = seastar
-	url = https://github.com/scylladb/scylla-seastar
+	url = ../seastar
 	ignore = dirty
 [submodule "swagger-ui"]
 	path = swagger-ui
