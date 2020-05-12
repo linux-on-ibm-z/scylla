@@ -86,7 +86,7 @@ struct appending_hash<bytes_view> {
 inline int32_t compare_unsigned(bytes_view v1, bytes_view v2) {
     auto n = memcmp(v1.begin(), v2.begin(), std::min(v1.size(), v2.size()));
     if (n) {
-        return n;
+        return n > 0 ? 1 : -1;
     }
     return (int32_t) (v1.size() - v2.size());
 }
